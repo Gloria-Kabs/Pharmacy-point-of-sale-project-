@@ -1,25 +1,44 @@
-import { StorageService } from "../services/StorageService.js";
-import { DispensingController } from "../controllers/DispensingController.js";
+export class StorageService {
+  findPrescriptionById(id) {
+    const list = JSON.parse(localStorage.getItem("prescriptions") || "[]");
+    return list.find((p) => p.prescriptionId === id) || null;
+  }
 
-const storage = new StorageService();
-const dispensingController = new DispensingController(storage);
+  savePrescription(prescription) {
+    const list = JSON.parse(localStorage.getItem("prescriptions") || "[]");
+    const index = list.findIndex((p) => p.prescriptionId === prescription.prescriptionId);
+    if (index >= 0) list[index] = prescription;
+    else list.push(prescription);
+    localStorage.setItem("prescriptions", JSON.stringify(list));
+  }
 
-// Pharmacist enters reference and loads details
-dispensingController.startDispensing();
-const rx = dispensingController.retrievePrescription("RX-1001");
+  findBatchesByMedicineId(medicineId) {
+    const batches = JSON.parse(localStorage.getItem("medicineBatches") || "[]");
+    return batches.filter((b) => b.medicineId === medicineId);
+  }
 
-// Verify status and expiry
-dispensingController.verifyPrescription();
+  saveBatch(batch) {
+    const batches = JSON.parse(localStorage.getItem("medicineBatches") || "[]");
+    const index = batches.findIndex((b) => b.batchId === batch.batchId);
+    if (index >= 0) batches[index] = batch;
+    else batches.push(batch);
+    localStorage.setItem("medicineBatches", JSON.stringify(batches));
+  }
 
-// Check batch availability
-const stockReport = dispensingController.checkAvailability();
+  findMedicineById(medicineId) {
+    const medicines = JSON.parse(localStorage.getItem("medicines") || "[]");
+    return medicines.find((m) => m.medicineId === medicineId) || null;
+  }
 
-// Confirm actual quantities to dispense
-const result = dispensingController.confirmDispensing(
-  [{ medicineId: "MED-01", quantityToDispense: 10 }],
-  "PHARM-USER-001"
-);
+  saveDispensingRecord(record) {
+    const records = JSON.parse(localStorage.getItem("dispensingRecords") || "[]");
+    records.push(record);
+    localStorage.setItem("dispensingRecords", JSON.stringify(records));
+  }
 
-console.log("Dispensing completed!");
-console.log("Cashier Handoff Reference:", result.pendingCharge.reference);
-console.log("Total Amount Due:", result.pendingCharge.amount, result.pendingCharge.currency);
+  savePendingCharge(charge) {
+    const charges = JSON.parse(localStorage.getItem("pendingCharges") || "[]");
+    charges.push(charge);
+    localStorage.setItem("pendingCharges", JSON.stringify(charges));
+  }
+}
