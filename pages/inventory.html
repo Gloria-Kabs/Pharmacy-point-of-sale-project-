@@ -6,6 +6,7 @@
     <title>Inventory - Pharmacy POS</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
+        /* ----- PAGE HEADER ----- */
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -17,6 +18,7 @@
         .page-header h1 { font-size: 28px; font-weight: 700; color: #1a202c; }
         .page-header .subtitle { color: #718096; font-size: 14px; }
 
+        /* ----- CONTROLS ----- */
         .inventory-controls {
             display: flex;
             gap: 12px;
@@ -50,6 +52,7 @@
             color: #a0aec0;
         }
 
+        /* ----- STATISTICS ----- */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -70,6 +73,7 @@
         .stat-card.danger .stat-number { color: #e53e3e; }
         .stat-card.success .stat-number { color: #38a169; }
 
+        /* ----- TABLE ----- */
         .table-wrapper {
             background: white;
             border-radius: 12px;
@@ -95,6 +99,7 @@
         }
         tr:hover td { background: #f7fafc; }
 
+        /* ----- STATUS BADGES ----- */
         .status-badge {
             padding: 4px 14px;
             border-radius: 20px;
@@ -106,9 +111,11 @@
         .status-badge.warning { background: #fffff0; color: #d69e2e; border: 1px solid #fefcbf; }
         .status-badge.danger { background: #fff5f5; color: #e53e3e; border: 1px solid #fed7d7; }
 
+        /* ----- ACTION BUTTONS ----- */
         .table-actions { display: flex; gap: 6px; flex-wrap: wrap; }
         .btn-sm { padding: 4px 12px; font-size: 12px; border-radius: 8px; }
 
+        /* ----- MODAL ----- */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -180,6 +187,7 @@
         }
         .modal .error-messages.active { display: block; }
 
+        /* ----- EMPTY STATE ----- */
         .empty-state {
             text-align: center;
             padding: 60px 20px;
@@ -188,6 +196,7 @@
         .empty-state .icon { font-size: 56px; display: block; margin-bottom: 12px; }
         .empty-state h3 { font-size: 18px; color: #1a202c; margin-bottom: 4px; }
 
+        /* ----- TOAST ----- */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -204,13 +213,16 @@
         }
         .toast.success { background: linear-gradient(135deg, #38a169, #276749); }
         .toast.error { background: linear-gradient(135deg, #e53e3e, #c53030); }
+        .toast.info { background: linear-gradient(135deg, #3182ce, #2b6cb0); }
         @keyframes toastSlide {
             from { opacity: 0; transform: translateX(40px); }
             to { opacity: 1; transform: translateX(0); }
         }
 
+        /* ----- CONTAINER ----- */
         .container { padding: 24px 32px; max-width: 1400px; margin: 0 auto; }
 
+        /* ----- RESPONSIVE ----- */
         @media (max-width: 768px) {
             .page-header { flex-direction: column; align-items: stretch; }
             .inventory-controls { flex-direction: column; }
@@ -223,6 +235,7 @@
     </style>
 </head>
 <body>
+    <!-- Navigation -->
     <nav id="navbar">
         <span class="nav-brand">🏥 <span>Pharmacy</span>POS</span>
         <a href="../dashboard.html">📊 Dashboard</a>
@@ -239,7 +252,9 @@
         <a href="#" onclick="logout()" class="logout-btn">🚪 Logout</a>
     </nav>
 
+    <!-- Main Content -->
     <div class="container">
+        <!-- Page Header -->
         <div class="page-header">
             <div>
                 <h1>📦 Inventory Management</h1>
@@ -255,6 +270,7 @@
             </div>
         </div>
 
+        <!-- Statistics -->
         <div class="stats-grid">
             <div class="stat-card primary">
                 <div class="stat-number" id="statTotal">0</div>
@@ -274,6 +290,7 @@
             </div>
         </div>
 
+        <!-- Table -->
         <div class="table-wrapper">
             <table>
                 <thead>
@@ -303,6 +320,7 @@
         </div>
     </div>
 
+    <!-- Add/Edit Modal -->
     <div class="modal-overlay" id="medicineModal">
         <div class="modal">
             <div class="modal-header">
@@ -333,6 +351,10 @@
                     <input type="number" id="medReorder" placeholder="10" min="0" value="10">
                 </div>
                 <div class="form-group">
+                    <label>Batch Number</label>
+                    <input type="text" id="medBatch" placeholder="e.g., BATCH-001">
+                </div>
+                <div class="form-group">
                     <label>Expiry Date</label>
                     <input type="date" id="medExpiry">
                 </div>
@@ -348,12 +370,17 @@
         </div>
     </div>
 
+    <!-- Toast Notification -->
     <div class="toast" id="toast"></div>
 
+    <!-- Scripts -->
     <script src="../js/storage/StorageService.js"></script>
     <script src="../js/models/Medicine.js"></script>
     <script src="../js/controllers/InventoryController.js"></script>
     <script>
+        // =============================================
+        // TOAST NOTIFICATION
+        // =============================================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -362,24 +389,42 @@
             setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
+        // =============================================
+        // INITIALIZATION
+        // =============================================
         document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
             const user = JSON.parse(sessionStorage.getItem('currentUser'));
-            if (!user) { window.location.href = '../index.html'; return; }
+            if (!user) {
+                window.location.href = '../index.html';
+                return;
+            }
             document.getElementById('userName').textContent = user.username.charAt(0).toUpperCase() + user.username.slice(1);
             document.getElementById('userAvatar').textContent = user.username.charAt(0).toUpperCase();
             loadInventory();
+
+            // Close modal on overlay click
             document.getElementById('medicineModal').addEventListener('click', function(e) {
                 if (e.target === this) closeModal();
             });
-            document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+            // Escape key to close modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
         });
 
+        // =============================================
+        // INVENTORY FUNCTIONS
+        // =============================================
         function loadInventory() {
             try {
                 const medicines = InventoryController.getAll();
                 renderTable(medicines);
                 updateStats();
-            } catch (e) { showToast('Error loading inventory', 'error'); }
+            } catch (e) {
+                console.error('Error loading inventory:', e);
+                showToast('Error loading inventory', 'error');
+            }
         }
 
         function renderTable(medicines) {
@@ -391,7 +436,7 @@
             tbody.innerHTML = medicines.map((med, index) => {
                 const statusClass = med.getStockStatus();
                 const statusLabel = med.getStockLabel();
-                const isExpired = med.expiryDate && med.expiryDate < new Date().toISOString().split('T')[0];
+                const isExpired = med.isExpired();
                 return `<tr>
                     <td>${index + 1}</td>
                     <td><strong>${med.name}</strong></td>
@@ -415,13 +460,23 @@
                 document.getElementById('statLowStock').textContent = stats.lowStock || 0;
                 document.getElementById('statOutOfStock').textContent = stats.outOfStock || 0;
                 document.getElementById('statTotalValue').textContent = `ZMW ${(stats.totalValue || 0).toFixed(2)}`;
-            } catch (e) {}
+            } catch (e) {
+                console.error('Error updating stats:', e);
+            }
         }
 
         function handleSearch(query) {
-            try { renderTable(InventoryController.search(query)); } catch (e) {}
+            try {
+                const results = InventoryController.search(query);
+                renderTable(results);
+            } catch (e) {
+                console.error('Error searching:', e);
+            }
         }
 
+        // =============================================
+        // MODAL FUNCTIONS
+        // =============================================
         function showAddModal() {
             document.getElementById('modalTitle').textContent = '➕ Add New Medicine';
             document.getElementById('modalSubmitBtn').textContent = 'Add Medicine';
@@ -434,7 +489,10 @@
 
         function editMedicine(id) {
             const med = InventoryController.getById(id);
-            if (!med) { showToast('Medicine not found', 'error'); return; }
+            if (!med) {
+                showToast('Medicine not found', 'error');
+                return;
+            }
             document.getElementById('modalTitle').textContent = '✏️ Edit Medicine';
             document.getElementById('modalSubmitBtn').textContent = 'Update Medicine';
             document.getElementById('editId').value = id;
@@ -443,6 +501,7 @@
             document.getElementById('medPrice').value = med.price;
             document.getElementById('medStock').value = med.stock;
             document.getElementById('medReorder').value = med.reorderLevel || 10;
+            document.getElementById('medBatch').value = med.batchNumber || '';
             document.getElementById('medExpiry').value = med.expiryDate || '';
             document.getElementById('medDescription').value = med.description || '';
             clearErrors();
@@ -458,6 +517,7 @@
                 price: parseFloat(document.getElementById('medPrice').value),
                 stock: parseInt(document.getElementById('medStock').value),
                 reorderLevel: parseInt(document.getElementById('medReorder').value) || 10,
+                batchNumber: document.getElementById('medBatch').value.trim(),
                 expiryDate: document.getElementById('medExpiry').value,
                 description: document.getElementById('medDescription').value.trim()
             };
@@ -465,20 +525,27 @@
             if (result.success) {
                 closeModal();
                 loadInventory();
-                showToast(id ? 'Medicine updated!' : 'Medicine added!', 'success');
+                showToast(id ? 'Medicine updated successfully!' : 'Medicine added successfully!', 'success');
             } else {
                 showErrors(result.errors);
-                showToast('Please fix errors', 'error');
+                showToast('Please fix the errors above', 'error');
             }
         }
 
         function deleteMedicine(id) {
             const med = InventoryController.getById(id);
-            if (!med) { showToast('Medicine not found', 'error'); return; }
-            if (!confirm(`Delete "${med.name}"?`)) return;
+            if (!med) {
+                showToast('Medicine not found', 'error');
+                return;
+            }
+            if (!confirm(`Are you sure you want to delete "${med.name}"?`)) return;
             const result = InventoryController.delete(id);
-            if (result.success) { loadInventory(); showToast('Medicine deleted!', 'success'); }
-            else { showToast(result.errors.join('\n'), 'error'); }
+            if (result.success) {
+                loadInventory();
+                showToast('Medicine deleted successfully!', 'success');
+            } else {
+                showToast(result.errors.join('\n'), 'error');
+            }
         }
 
         function closeModal() {
@@ -498,13 +565,17 @@
             document.getElementById('errorList').innerHTML = '';
         }
 
+        // =============================================
+        // LOGOUT
+        // =============================================
         function logout() {
-            if (confirm('Logout?')) {
+            if (confirm('Are you sure you want to logout?')) {
                 sessionStorage.removeItem('currentUser');
                 window.location.href = '../index.html';
             }
         }
 
+        // Make functions global for onclick handlers
         window.loadInventory = loadInventory;
         window.handleSearch = handleSearch;
         window.showAddModal = showAddModal;
@@ -513,6 +584,7 @@
         window.handleFormSubmit = handleFormSubmit;
         window.closeModal = closeModal;
         window.logout = logout;
+        window.showToast = showToast;
     </script>
 </body>
 </html>

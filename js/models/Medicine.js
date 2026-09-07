@@ -1,5 +1,6 @@
 /**
  * Medicine Model - Represents a medicine in the pharmacy
+ * Includes MedicineBatch functionality for stock tracking
  */
 class Medicine {
     constructor(data) {
@@ -11,30 +12,36 @@ class Medicine {
         this.reorderLevel = parseInt(data.reorderLevel) || 10;
         this.expiryDate = data.expiryDate || '';
         this.description = data.description || '';
+        this.batchNumber = data.batchNumber || '';
         this.createdAt = data.createdAt || new Date().toISOString();
         this.updatedAt = new Date().toISOString();
     }
 
+    // Check if medicine is low on stock
     isLowStock() {
         return this.stock <= this.reorderLevel && this.stock > 0;
     }
 
+    // Check if medicine is out of stock
     isOutOfStock() {
         return this.stock <= 0;
     }
 
+    // Get stock status for UI (success, warning, danger)
     getStockStatus() {
         if (this.isOutOfStock()) return 'danger';
         if (this.isLowStock()) return 'warning';
         return 'success';
     }
 
+    // Get stock label for UI
     getStockLabel() {
         if (this.isOutOfStock()) return 'Out of Stock';
         if (this.isLowStock()) return 'Low Stock';
         return 'In Stock';
     }
 
+    // Validate medicine data
     validate() {
         const errors = [];
         if (!this.name || this.name.trim() === '') {
@@ -55,10 +62,12 @@ class Medicine {
         };
     }
 
+    // Get formatted price with currency
     getFormattedPrice() {
         return `ZMW ${this.price.toFixed(2)}`;
     }
 
+    // Update stock quantity (positive = add, negative = remove)
     updateStock(quantity) {
         const newStock = this.stock + quantity;
         if (newStock < 0) return false;
@@ -67,6 +76,13 @@ class Medicine {
         return true;
     }
 
+    // Check if medicine is expired
+    isExpired() {
+        if (!this.expiryDate) return false;
+        return this.expiryDate < new Date().toISOString().split('T')[0];
+    }
+
+    // Convert to plain object for storage
     toObject() {
         return {
             id: this.id,
@@ -77,12 +93,19 @@ class Medicine {
             reorderLevel: this.reorderLevel,
             expiryDate: this.expiryDate,
             description: this.description,
+            batchNumber: this.batchNumber,
             createdAt: this.createdAt,
             updatedAt: this.updatedAt
         };
     }
+
+    // Create from plain object
+    static fromObject(data) {
+        return new Medicine(data);
+    }
 }
 
+// Make available globally
 if (typeof window !== 'undefined') {
     window.Medicine = Medicine;
 }
