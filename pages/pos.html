@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS - Pharmacy POS</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="../dashboard.html">🏥 Dashboard</a>
+        <a href="prescriptions.html">💊 Prescriptions</a>
+        <a href="inventory.html">📦 Inventory</a>
+        <a href="pos.html" class="active">🛒 POS</a>
+        <a href="customers.html">👤 Customers</a>
+        <a href="reports.html">📊 Reports</a>
+        <a href="../admin/users.html">👥 Users</a>
+        <span class="user-info" id="userInfo"></span>
+        <a href="#" onclick="logout()" style="color:#e74c3c;">🚪 Logout</a>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h3>🛒 Point of Sale</h3>
+            <p>POS system coming soon...</p>
+            <p style="color:#7f8c8d;margin-top:10px;">This page is being built by the next team member.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!user) {
+                window.location.href = '../index.html';
+                return;
+            }
+            document.getElementById('userInfo').textContent = `👤 ${user.username} (${user.role})`;
+        });
+
+        function logout() {
+            if (confirm('Logout?')) {
+                sessionStorage.removeItem('currentUser');
+                window.location.href = '../index.html';
+            }
+        }
+    </script>
+</body>
+</html>

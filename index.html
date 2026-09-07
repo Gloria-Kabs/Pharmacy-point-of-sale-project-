@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharmacy POS - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Additional login page styles */
+        .login-container {
+            max-width: 420px;
+            margin: 80px auto;
+            background: white;
+            padding: 48px 40px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(226, 232, 240, 0.6);
+        }
+
+        .login-container .logo-icon {
+            text-align: center;
+            font-size: 56px;
+            margin-bottom: 8px;
+        }
+
+        .login-container h1 {
+            text-align: center;
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a202c;
+            letter-spacing: -0.5px;
+        }
+
+        .login-container h1 span {
+            color: #3182ce;
+        }
+
+        .login-container .subtitle {
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .login-container .form-group {
+            margin-bottom: 16px;
+        }
+
+        .login-container .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 6px;
+        }
+
+        .login-container select,
+        .login-container input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Inter', -apple-system, sans-serif;
+            transition: all 0.2s;
+            background: #f7fafc;
+            color: #2d3748;
+        }
+
+        .login-container select:focus,
+        .login-container input:focus {
+            outline: none;
+            border-color: #3182ce;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
+        }
+
+        .login-container select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #3182ce, #2b6cb0);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            font-family: 'Inter', -apple-system, sans-serif;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .login-container button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(49, 130, 206, 0.35);
+        }
+
+        .login-container button:active {
+            transform: translateY(0);
+        }
+
+        .login-container .demo-credentials {
+            margin-top: 24px;
+            padding: 16px 20px;
+            background: #f7fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .login-container .demo-credentials p {
+            font-size: 12px;
+            color: #718096;
+            text-align: center;
+            margin: 0;
+            line-height: 1.8;
+        }
+
+        .login-container .demo-credentials .badge {
+            display: inline-block;
+            padding: 2px 12px;
+            background: #e2e8f0;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #4a5568;
+            margin: 0 2px;
+        }
+
+        .login-container .demo-credentials .badge-admin {
+            background: #ebf8ff;
+            color: #2b6cb0;
+        }
+
+        .login-container .demo-credentials .badge-pharmacist {
+            background: #f0fff4;
+            color: #276749;
+        }
+
+        .login-container .demo-credentials .badge-cashier {
+            background: #fffff0;
+            color: #b7791f;
+        }
+
+        .login-container .error-message {
+            background: #fff5f5;
+            color: #e53e3e;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #fed7d7;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .login-container .error-message.active {
+            display: block;
+        }
+
+        /* Toast for login page */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            z-index: 2000;
+            animation: toastSlide 0.4s ease;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+
+        .toast.error { 
+            background: linear-gradient(135deg, #e53e3e, #c53030); 
+        }
+
+        .toast.success { 
+            background: linear-gradient(135deg, #38a169, #276749); 
+        }
+
+        @keyframes toastSlide {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .login-container {
+                margin: 40px 16px;
+                padding: 32px 24px;
+            }
+            .login-container h1 {
+                font-size: 26px;
+            }
+            .login-container .logo-icon {
+                font-size: 44px;
+            }
+            .login-container .demo-credentials p {
+                font-size: 11px;
+            }
+            .login-container .demo-credentials .badge {
+                font-size: 10px;
+                padding: 1px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-icon">🏥</div>
+        <h1>Pharmacy <span>POS</span></h1>
+        <p class="subtitle">Pharmacy Point of Sale System</p>
+        
+        <div class="error-message" id="loginError">
+            ❌ Invalid password. Please try again.
+        </div>
+        
+        <div class="form-group">
+            <label for="roleSelect">👤 Select Role</label>
+            <select id="roleSelect">
+                <option value="ADMIN">👑 Admin</option>
+                <option value="PHARMACIST">💊 Pharmacist</option>
+                <option value="CASHIER">💰 Cashier</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="passwordInput">🔑 Password</label>
+            <input type="password" id="passwordInput" placeholder="Enter password" value="123">
+        </div>
+        
+        <button onclick="handleLogin()">🔐 Sign In</button>
+        
+        <div class="demo-credentials">
+            <p>
+                <strong>Demo Credentials:</strong><br>
+                <span class="badge badge-admin">👑 Admin: 123</span>
+                <span class="badge badge-pharmacist">💊 Pharmacist: 123</span>
+                <span class="badge badge-cashier">💰 Cashier: 123</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // =============================================
+        // TOAST NOTIFICATION
+        // =============================================
+        function showToast(message, type = 'error') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            toast.style.display = 'flex';
+            
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // =============================================
+        // LOGIN FUNCTION
+        // =============================================
+        function handleLogin() {
+            const role = document.getElementById('roleSelect').value;
+            const password = document.getElementById('passwordInput').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            // Hide any previous error
+            errorDiv.classList.remove('active');
+            
+            // Hardcoded users for demo
+            const users = [
+                { id: 'u1', username: 'admin', password: '123', role: 'ADMIN' },
+                { id: 'u2', username: 'pharmacist', password: '123', role: 'PHARMACIST' },
+                { id: 'u3', username: 'cashier', password: '123', role: 'CASHIER' }
+            ];
+            
+            // Find user
+            const user = users.find(u => u.role === role && u.password === password);
+            
+            if (user) {
+                // Save user to session
+                sessionStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // Show success toast
+                showToast('✅ Welcome ' + user.username + '! Redirecting...', 'success');
+                
+                // Redirect after short delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 500);
+            } else {
+                // Show error
+                errorDiv.textContent = '❌ Invalid password for ' + role + '. Please use: 123';
+                errorDiv.classList.add('active');
+                
+                // Shake animation
+                const input = document.getElementById('passwordInput');
+                input.style.animation = 'shake 0.5s ease';
+                setTimeout(() => {
+                    input.style.animation = '';
+                }, 500);
+            }
+        }
+
+        // =============================================
+        // ENTER KEY SUPPORT
+        // =============================================
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+
+        document.getElementById('roleSelect').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('passwordInput').focus();
+            }
+        });
+
+        // =============================================
+        // SHAKE ANIMATION
+        // =============================================
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+                20%, 40%, 60%, 80% { transform: translateX(8px); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // =============================================
+        // AUTO-FOCUS PASSWORD FIELD
+        // =============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('passwordInput').focus();
+            
+            // Check if already logged in (redirect)
+            const user = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (user) {
+                window.location.href = 'dashboard.html';
+            }
+        });
+    </script>
+</body>
+</html>

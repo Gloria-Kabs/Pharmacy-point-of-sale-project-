@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customers - Pharmacy POS</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav>
+        <a href="../dashboard.html">🏥 Dashboard</a>
+        <a href="prescriptions.html">💊 Prescriptions</a>
+        <a href="inventory.html">📦 Inventory</a>
+        <a href="pos.html">🛒 POS</a>
+        <a href="customers.html" class="active">👤 Customers</a>
+        <a href="reports.html">📊 Reports</a>
+        <a href="../admin/users.html">👥 Users</a>
+        <span class="user-info" id="userInfo"></span>
+        <a href="#" onclick="logout()" style="color:#e74c3c;">🚪 Logout</a>
+    </nav>
+    <div class="container">
+        <div class="card">
+            <h3>👤 Customers</h3>
+            <p>Customer management coming soon...</p>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!user) { window.location.href = '../index.html'; return; }
+            document.getElementById('userInfo').textContent = `👤 ${user.username} (${user.role})`;
+        });
+        function logout() { sessionStorage.removeItem('currentUser'); window.location.href = '../index.html'; }
+    </script>
+</body>
+</html>
