@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pharmacy POS - Point of Sale</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <header class="app-header">
+
+        <div class="app-brand">
+            <h1>Pharmacy POS</h1>
+        </div>
+
+        <nav class="app-nav">
+            <a href="../index.html">Dashboard</a>
+            <a href="Prescriptions.html">Prescriptions</a>
+            <a href="Inventory.html">Inventory</a>
+            <a href="POS.html" class="active">POS</a>
+            <a href="Customers.html">Customers</a>
+            <a href="Reports.html">Reports</a>
+            <a href="Users.html">Users</a>
+        </nav>
+
+        <div class="user-area">
+            <span id="currentUsername">admin</span>
+            <button id="logoutButton" type="button">Logout</button>
+        </div>
+
+    </header>
+
+
+    <main class="page-container">
+
+        <section class="page-header">
+
+            <div>
+                <h2>Point of Sale</h2>
+
+                <p>
+                    Process medicine sales, payments, and receipts.
+                </p>
+            </div>
+
+        </section>
+
+
+        <section class="pos-layout">
+<!-- PRESCRIPTION DISPENSING -->
+
+<div class="card prescription-panel">
+
+    <div class="card-header">
+        <h3>Prescription Dispensing</h3>
+        <span id="prescriptionStatus" class="status-badge">
+            No prescription
+        </span>
+    </div>
+
+    <div class="form-group">
+
+        <label for="prescriptionReference">
+            Prescription Reference
+        </label>
+
+        <div class="prescription-search">
+
+            <input
+                type="text"
+                id="prescriptionReference"
+                placeholder="e.g. RX-1001"
+            >
+
+            <button
+                type="button"
+                id="retrievePrescriptionButton"
+            >
+                Retrieve & Verify
+            </button>
+
+        </div>
+
+    </div>
+
+    <div
+        id="prescriptionDetails"
+        class="prescription-details"
+        hidden
+    >
+
+        <div class="summary-row">
+            <span>Patient</span>
+            <strong id="prescriptionPatient">-</strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Prescriber</span>
+            <strong id="prescriptionPrescriber">-</strong>
+        </div>
+
+        <div class="summary-row">
+            <span>Status</span>
+            <strong id="prescriptionCurrentStatus">-</strong>
+        </div>
+
+        <div
+            id="prescriptionItems"
+            class="prescription-items"
+        >
+            <!-- Prescription items loaded by POS.js -->
+        </div>
+
+        <div class="prescription-availability">
+            <strong>Availability</strong>
+            <div id="availabilityResult">
+                Check availability after verification.
+            </div>
+        </div>
+
+        <p
+            id="dispensingError"
+            class="login-error"
+            hidden
+        ></p>
+
+        <div class="pos-actions">
+
+            <button
+                type="button"
+                id="checkAvailabilityButton"
+            >
+                Check Availability
+            </button>
+
+            <button
+                type="button"
+                id="dispensePrescriptionButton"
+            >
+                Dispense Prescription
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+            <!-- LEFT SIDE: MEDICINE SELECTION -->
+
+            <div class="pos-products">
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3>Medicine</h3>
+                    </div>
+
+
+                    <div class="search-container">
+
+                        <label for="medicineSearch">
+                            Search Medicine
+                        </label>
+
+                        <input
+                            type="search"
+                            id="medicineSearch"
+                            placeholder="Search by name, ID, or category..."
+                        >
+
+                    </div>
+
+
+                    <div
+                        id="medicineList"
+                        class="medicine-list"
+                    >
+
+                        <!-- Medicines will be loaded by POS.js -->
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT SIDE: CURRENT SALE -->
+
+            <div class="pos-sale">
+
+                <div class="card">
+
+                    <div class="card-header">
+
+                        <h3>Current Sale</h3>
+
+                        <span
+                            id="saleStatus"
+                            class="status-badge"
+                        >
+                            No active sale
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        id="saleItems"
+                        class="sale-items"
+                    >
+
+                        <div class="empty-state">
+                            <p>No items added to the sale.</p>
+
+                            <p>
+                                Select a medicine to begin.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sale-summary">
+
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+
+                            <strong id="saleSubtotal">
+                                0.00
+                            </strong>
+                        </div>
+
+
+                        <div class="summary-row total-row">
+
+                            <span>Total</span>
+
+                            <strong id="saleTotal">
+                                0.00
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PAYMENT -->
+
+                <div class="card">
+
+                    <div class="card-header">
+                        <h3>Payment</h3>
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="paymentMethod">
+                            Payment Method
+                        </label>
+
+                        <select id="paymentMethod">
+
+                            <option value="CASH">
+                                Cash
+                            </option>
+
+                            <option value="MOBILE_MONEY">
+                                Mobile Money
+                            </option>
+
+                            <option value="CARD">
+                                Card
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="amountTendered">
+                            Amount Tendered
+                        </label>
+
+                        <input
+                            type="number"
+                            id="amountTendered"
+                            min="0"
+                            step="0.01"
+                            placeholder="0.00"
+                        >
+
+                    </div>
+
+
+                    <div class="payment-result">
+
+                        <span>Change</span>
+
+                        <strong id="paymentChange">
+                            0.00
+                        </strong>
+
+                    </div>
+
+
+                    <p
+                        id="posError"
+                        class="login-error"
+                        hidden
+                    ></p>
+
+
+                    <div class="pos-actions">
+
+                        <button
+                            type="button"
+                            id="cancelSaleButton"
+                        >
+                            Cancel Sale
+                        </button>
+
+
+                        <button
+                            type="button"
+                            id="completeSaleButton"
+                        >
+                            Complete Sale
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RECEIPT -->
+
+        <section
+            id="receiptSection"
+            class="card receipt-section"
+            hidden
+        >
+
+            <div class="card-header">
+
+                <h3>Sale Completed</h3>
+
+            </div>
+
+
+            <div id="receiptContent">
+
+                <!-- Receipt generated by POS.js -->
+
+            </div>
+
+
+            <button
+                type="button"
+                id="newSaleButton"
+            >
+                Start New Sale
+            </button>
+
+        </section>
+
+    </main>
+
+
+    <script
+        type="module"
+        src="../js/pages/POS.js"
+    ></script>
+
+</body>
+</html>

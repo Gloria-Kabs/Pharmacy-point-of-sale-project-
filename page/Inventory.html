@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Inventory | Pharmacy POS</title>
+
+    <link
+        rel="stylesheet"
+        href="../css/style.css"
+    >
+</head>
+
+<body>
+
+    <!-- ============================================
+         NAVIGATION
+         ============================================ -->
+
+    <nav>
+
+        <div class="nav-brand">
+            <span>Pharmacy POS</span>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="../dashboard.html">
+                Dashboard
+            </a>
+
+            <a href="prescriptions.html">
+                Prescriptions
+            </a>
+
+            <a
+                href="Inventory.html"
+                class="active"
+            >
+                Inventory
+            </a>
+
+            <a href="pos.html">
+                POS
+            </a>
+
+            <a href="customers.html">
+                Customers
+            </a>
+
+            <a href="reports.html">
+                Reports
+            </a>
+
+            <a href="../admin/users.html">
+                Users
+            </a>
+
+        </div>
+
+        <div class="user-info">
+
+            <span id="currentUserName">
+                User
+            </span>
+
+            <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                id="logoutBtn"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </nav>
+
+
+    <!-- ============================================
+         MAIN CONTENT
+         ============================================ -->
+
+    <main class="inventory-page">
+
+        <!-- PAGE HEADER -->
+
+        <section class="page-header">
+
+            <div>
+
+                <h1>
+                    Inventory
+                </h1>
+
+                <p>
+                    Manage medicines, stock levels,
+                    and medicine batches.
+                </p>
+
+            </div>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                id="addMedicineBtn"
+            >
+                + Add Medicine
+            </button>
+
+        </section>
+
+
+        <!-- ========================================
+             INVENTORY STATISTICS
+             ======================================== -->
+
+        <section class="inventory-stats">
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Medicines
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalMedicines"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Total Stock
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="totalStock"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Low Stock
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="lowStock"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Out of Stock
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="outOfStock"
+                >
+                    0
+                </div>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <div class="stat-label">
+                    Expired Batches
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="expiredBatches"
+                >
+                    0
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ========================================
+             INVENTORY CONTROLS
+             ======================================== -->
+
+        <section class="inventory-controls">
+
+            <div class="search-box">
+
+                <label for="searchInput">
+                    Search Medicine
+                </label>
+
+                <input
+                    type="search"
+                    id="searchInput"
+                    placeholder="Search by name, ID, or category..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="filter-box">
+
+                <label for="categoryFilter">
+                    Category
+                </label>
+
+                <select id="categoryFilter">
+
+                    <option value="">
+                        All Categories
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn btn-outline"
+                id="clearFiltersBtn"
+            >
+                Clear
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-outline"
+                id="refreshBtn"
+            >
+                Refresh
+            </button>
+
+        </section>
+
+
+        <!-- ========================================
+             INVENTORY TABLE
+             ======================================== -->
+
+        <section class="inventory-table-section">
+
+            <div class="table-header">
+
+                <div>
+
+                    <h2>
+                        Medicines
+                    </h2>
+
+                    <span id="medicineCount">
+                        0 medicines
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table class="inventory-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Medicine ID
+                            </th>
+
+                            <th>
+                                Name
+                            </th>
+
+                            <th>
+                                Category
+                            </th>
+
+                            <th>
+                                Unit Price
+                            </th>
+
+                            <th>
+                                Stock
+                            </th>
+
+                            <th>
+                                Reorder Level
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Batches
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="inventoryTableBody">
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                class="empty-state"
+                            >
+                                Loading inventory...
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ============================================
+         ADD / EDIT MEDICINE MODAL
+         ============================================ -->
+
+    <div
+        class="modal-overlay"
+        id="medicineModal"
+        hidden
+    >
+
+        <div class="modal">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h2 id="modalTitle">
+                        Add Medicine
+                    </h2>
+
+                    <p id="modalDescription">
+                        Enter the medicine details below.
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="closeModalBtn"
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+
+            <form id="medicineForm">
+
+                <input
+                    type="hidden"
+                    id="medicineId"
+                >
+
+
+                <!-- MEDICINE DETAILS -->
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+
+                        <label for="medicineName">
+
+                            Medicine Name
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="medicineName"
+                            name="name"
+                            required
+                            maxlength="150"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="medicineCategory">
+                            Category
+                        </label>
+
+                        <input
+                            type="text"
+                            id="medicineCategory"
+                            name="category"
+                            maxlength="100"
+                            placeholder="e.g. Antibiotic"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="unitPrice">
+
+                            Unit Price
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="unitPrice"
+                            name="unitPrice"
+                            min="0"
+                            step="0.01"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="reorderLevel">
+                            Reorder Level
+                        </label>
+
+                        <input
+                            type="number"
+                            id="reorderLevel"
+                            name="reorderLevel"
+                            min="0"
+                            step="1"
+                            value="0"
+                        >
+
+                    </div>
+
+
+                    <div class="form-group form-group-full">
+
+                        <label for="medicineDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="medicineDescription"
+                            name="description"
+                            rows="3"
+                            maxlength="500"
+                            placeholder="Optional medicine description..."
+                        ></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ====================================
+                     INITIAL BATCH
+                     ==================================== -->
+
+                <div
+                    class="batch-section"
+                    id="initialBatchSection"
+                >
+
+                    <div class="section-heading">
+
+                        <h3>
+                            Initial Batch
+                        </h3>
+
+                        <p>
+                            Optional. Add the first
+                            stock batch when creating
+                            the medicine.
+                        </p>
+
+                    </div>
+
+
+                    <div class="form-grid">
+
+                        <div class="form-group">
+
+                            <label for="batchNumber">
+                                Batch Number
+                            </label>
+
+                            <input
+                                type="text"
+                                id="batchNumber"
+                                name="batchNumber"
+                                maxlength="100"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="quantityOnHand">
+                                Quantity on Hand
+                            </label>
+
+                            <input
+                                type="number"
+                                id="quantityOnHand"
+                                name="quantityOnHand"
+                                min="0"
+                                step="1"
+                                value="0"
+                            >
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="expiryDate">
+                                Expiry Date
+                            </label>
+
+                            <input
+                                type="date"
+                                id="expiryDate"
+                                name="expiryDate"
+                            >
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FORM ACTIONS -->
+
+                <div class="modal-actions">
+
+                    <button
+                        type="button"
+                        class="btn btn-outline"
+                        id="cancelModalBtn"
+                    >
+                        Cancel
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        id="saveMedicineBtn"
+                    >
+                        Save Medicine
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================
+         BATCH DETAILS MODAL
+         ============================================ -->
+
+    <div
+        class="modal-overlay"
+        id="batchModal"
+        hidden
+    >
+
+        <div class="modal modal-large">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h2 id="batchModalTitle">
+                        Medicine Batches
+                    </h2>
+
+                    <p id="batchModalDescription"></p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="modal-close"
+                    id="closeBatchModalBtn"
+                    aria-label="Close"
+                >
+                    &times;
+                </button>
+
+            </div>
+
+
+            <div class="batch-list-wrapper">
+
+                <table class="batch-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Batch Number
+                            </th>
+
+                            <th>
+                                Expiry Date
+                            </th>
+
+                            <th>
+                                Quantity
+                            </th>
+
+                            <th>
+                                Received Date
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="batchTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================
+         TOAST
+         ============================================ -->
+
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite"
+        hidden
+    ></div>
+
+
+    <!-- ============================================
+         APPLICATION
+         ============================================ -->
+
+    <script
+        type="module"
+        src="../js/pages/Inventory.js"
+    ></script>
+
+</body>
+
+</html>

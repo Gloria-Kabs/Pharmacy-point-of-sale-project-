@@ -1,0 +1,17 @@
+{
+  "name": "pharmacy-point-of-sale",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^7.1.5",
+    "vitest": "^5.0.0"
+  }
+}

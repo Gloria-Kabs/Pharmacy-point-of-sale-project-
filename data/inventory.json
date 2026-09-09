@@ -1,0 +1,23 @@
+[
+  {
+    "id": "MED-001",
+    "name": "Amoxicillin 500mg",
+    "category": "Antibiotic",
+    "price": 12.50,
+    "stock": 100
+  },
+  {
+    "id": "MED-002",
+    "name": "Ibuprofen 200mg",
+    "category": "Pain Relief",
+    "price": 5.99,
+    "stock": 250
+  },
+  {
+    "id": "MED-003",
+    "name": "Paracetamol 500mg",
+    "category": "Pain Relief",
+    "price": 3.50,
+    "stock": 500
+  }
+]
